@@ -1,0 +1,47 @@
+.test {
+  color: green;
+}
+
+.filter-header {
+  color: green;
+}
+
+.search-header {
+  color: red;
+}
+
+.main-container {
+  margin-left: 50px;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #f8f9fa;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-info img {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+
+.divv {
+  margin-bottom: 70px;
+  border-color: green;
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 13px;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+}

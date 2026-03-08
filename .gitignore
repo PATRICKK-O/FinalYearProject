@@ -1,0 +1,73 @@
+# ========================
+# Django / Python Defaults
+# ========================
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.sqlite3
+*.log
+db.sqlite3
+
+# ========================
+# Virtual Environment
+# ========================
+.venv/
+venv/
+env/
+ENV/
+
+# ========================
+# Django Cache / Migrations
+# ========================
+*.pot
+*.py[co]
+*.egg-info/
+migrations/__pycache__/
+**/migrations/__pycache__/
+
+# ========================
+# IDE / OS Files
+# ========================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ========================
+# Media & Static Files
+# ========================
+media/
+staticfiles/
+*.png
+*.jpg
+*.jpeg
+
+# ========================
+# Project Data & Scripts
+# ========================
+data/*.csv
+data/*.json
+data/*.png
+data/*.xlsx
+data/*.txt
+
+# ========================
+# Environment & Secrets
+# ========================
+.env
+*.env
+.env.*
+
+# ========================
+# Jupyter / Notebooks
+# ========================
+.ipynb_checkpoints/
+
+# ========================
+# Compiled Reports / PDFs
+# ========================
+*.pdf
+*.docx
+*.pptx
+*.zip

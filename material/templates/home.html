@@ -1,0 +1,787 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PSMRS - Home</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Lobster&family=Manufacturing+Consent&family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background-color: #121820;
+      color: #f1f1f1;
+      font-family: 'gozaga', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Mobile Menu Toggle */
+    .mobile-menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: #7ef58a;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 10px;
+    }
+
+    .mobile-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 999;
+      display: none;
+    }
+
+    .sidebar {
+      width: 220px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: #1c1f2b;
+      padding-top: 60px;
+      z-index: 1000;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar a {
+      padding: 15px 25px;
+      text-decoration: none;
+      font-size: 16px;
+      display: block;
+      color: #7ef58a;
+      transition: background-color 0.3s ease;
+    }
+
+    .sidebar a:hover {
+      background-color: #2c2f3d;
+    }
+
+    .sidebar-close {
+      display: none;
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      color: #7ef58a;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .topbar {
+      margin-left: 220px;
+      height: 70px;
+      background-color: #1c1f2b;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      transition: margin-left 0.3s ease;
+    }
+
+    .hero {
+      background-image: url('{% static "img/hero.jpg" %}');
+      background-size: cover;
+      background-position: center;
+      height: 650px;
+      margin-left: 220px;
+      position: relative;
+      transition: all 0.4s ease;
+    }
+
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.4);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 80px 20px 40px;
+    }
+
+    .form-box {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 30px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 600px;
+      color: white;
+      border: 1px solid #ffffff33;
+      margin-bottom: 20px;
+    }
+
+    .form-box input, .form-box select {
+      background: transparent;
+      color: white;
+      border: 1px solid #ffffff55;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-box input:focus, .form-box select:focus {
+      border-color: #7ef58a;
+      box-shadow: 0 0 0 0.2rem rgba(126, 245, 138, 0.25);
+    }
+
+    .form-box input::placeholder {
+      color: #ccc;
+    }
+
+    .main-content {
+      margin-left: 220px;
+      padding: 40px;
+      background-color: #1c1f2b;
+      transition: margin-left 0.3s ease;
+    }
+
+    #search-history, #suggestions {
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      max-height: 200px;
+      overflow-y: auto;
+      width: 100%;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 100;
+    }
+
+    .list-group-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .list-group-item:hover {
+      background-color: rgba(126, 245, 138, 0.1) !important;
+    }
+
+    #form-wrapper {
+      transition: all 0.3s ease;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .profile-pic {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-left: 10px;
+    }
+
+    .loader {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px auto;
+      font-family: "Lobster", cursive;
+      font-size: 34px;
+      font-weight: bold;
+      color: #7ef58a;
+      position: relative;
+    }
+
+    .loader-icon {
+      font-size: 26px;
+      color: #7ef58a;
+      animation: iconSpin 2s linear infinite;
+      text-shadow: 
+        0 0 10px rgba(126, 245, 138, 0.6),
+        0 0 20px rgba(126, 245, 138, 0.4);
+    }
+
+    .loader-text {
+      background: linear-gradient(135deg, #7ef58a 0%, #4ade80 50%, #22c55e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 2px;
+      position: relative;
+      animation: textGlow 1.5s ease-in-out infinite alternate;
+    }
+
+    .loader-text::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #7ef58a, transparent);
+      animation: underlineSlide 2s linear infinite;
+    }
+
+    .loader::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% + 30px);
+      height: calc(100% + 16px);
+      background: linear-gradient(135deg, #7ef58a 0%, #4ade80 50%, #22c55e 100%);
+      border-radius: 8px;
+      opacity: 0.1;
+      z-index: -1;
+      animation: backgroundPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes iconSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes textGlow {
+      0% { 
+        text-shadow: 
+          0 0 10px rgba(126, 245, 138, 0.5),
+          0 0 20px rgba(126, 245, 138, 0.3);
+      }
+      100% { 
+        text-shadow: 
+          0 0 15px rgba(126, 245, 138, 0.8),
+          0 0 25px rgba(126, 245, 138, 0.6),
+          0 0 35px rgba(126, 245, 138, 0.4);
+      }
+    }
+
+    @keyframes underlineSlide {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    @keyframes backgroundPulse {
+      0%, 100% { 
+        opacity: 0.1;
+        transform: translateX(-50%) scale(0.9);
+      }
+      50% { 
+        opacity: 0.2;
+        transform: translateX(-50%) scale(1.05);
+      }
+    }
+    
+    .form-box select {
+      color: rgb(220, 113, 113);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 5px;
+      padding: 8px;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    .form-box select option {
+      background: rgb(254, 190, 190);
+    }
+
+    .btnn {
+      width: 100%;
+      max-width: 250px;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .btnn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(126, 245, 138, 0.3);
+    }
+
+   .logo {
+      font-family: "Lobster", sans-serif;
+      color: #7ef58a;
+      font-size: 32px;
+      font-weight: bold;
+      text-shadow: 
+        0 0 10px rgba(126, 245, 138, 0.5),
+        0 0 20px rgba(126, 245, 138, 0.3),
+        0 0 30px rgba(126, 245, 138, 0.1);
+      background: linear-gradient(135deg, #7ef58a 0%, #4ade80 50%, #22c55e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      display: inline-block;
+      transition: all 0.3s ease;
+      letter-spacing: 2px;
+    }
+
+    .logo::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #7ef58a 0%, #4ade80 50%, #22c55e 100%);
+      border-radius: 8px;
+      opacity: 0.1;
+      z-index: -1;
+      transform: scale(0.8);
+      transition: all 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: translateY(-2px);
+      text-shadow: 
+        0 0 15px rgba(126, 245, 138, 0.7),
+        0 0 25px rgba(126, 245, 138, 0.5),
+        0 0 35px rgba(126, 245, 138, 0.3);
+    }
+
+    .logo:hover::before {
+      transform: scale(1);
+      opacity: 0.2;
+    }
+
+    .logo .logo-icon {
+      display: inline-block;
+      margin-right: 8px;
+      font-size: 28px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+      .mobile-menu-toggle {
+        display: block;
+      }
+
+      .sidebar {
+        transform: translateX(-100%);
+        width: 280px;
+      }
+
+      .sidebar.active {
+        transform: translateX(0);
+      }
+
+      .sidebar-close {
+        display: block;
+      }
+
+      .mobile-overlay.active {
+        display: block;
+      }
+
+      .topbar {
+        margin-left: 0;
+        padding: 0 15px;
+      }
+
+      .hero {
+        margin-left: 0;
+        height: auto;
+        min-height: 100vh;
+      }
+
+      .overlay {
+        padding: 100px 15px 40px;
+      }
+
+      .form-box {
+        padding: 20px;
+        margin-bottom: 15px;
+      }
+
+      .form-box h3 {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding: 20px 15px;
+      }
+
+      .logo {
+        font-size: 24px;
+      }
+
+      .logo .logo-icon {
+        font-size: 20px;
+      }
+
+      .profile-pic {
+        width: 35px;
+        height: 35px;
+      }
+
+      #search-history, #suggestions {
+        max-height: 150px;
+        font-size: 14px;
+      }
+
+      .list-group-item {
+        padding: 10px 12px;
+        font-size: 14px;
+      }
+
+      .btnn {
+        width: 100%;
+        margin-top: 15px;
+      }
+
+      .form-check-label {
+        font-size: 14px;
+        margin-right: 15px !important;
+      }
+
+      .loader {
+        font-size: 28px;
+        gap: 8px;
+      }
+
+      .loader-icon {
+        font-size: 22px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .overlay {
+        padding: 80px 10px 30px;
+      }
+
+      .form-box {
+        padding: 15px;
+      }
+
+      .logo {
+        font-size: 20px;
+      }
+
+      .topbar {
+        padding: 0 10px;
+      }
+
+      .main-content {
+        padding: 15px 10px;
+      }
+
+      .form-box h3 {
+        font-size: 1.1rem;
+      }
+
+      .loader {
+        font-size: 24px;
+      }
+
+      .loader-icon {
+        font-size: 18px;
+      }
+    }
+
+    /* Ensure dropdowns work on mobile */
+    @media (max-width: 768px) {
+      .dropdown-menu {
+        position: absolute !important;
+        transform: none !important;
+        right: 0;
+        left: auto;
+      }
+    }
+
+    /* Better touch targets */
+    @media (max-width: 768px) {
+      .sidebar a {
+        padding: 18px 25px;
+        font-size: 18px;
+      }
+
+      .btn {
+        min-height: 44px;
+      }
+
+      .form-control {
+        min-height: 44px;
+        font-size: 16px;
+      }
+
+      .form-select {
+        min-height: 44px;
+        font-size: 16px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Mobile Overlay -->
+  <div class="mobile-overlay" id="mobile-overlay"></div>
+
+  <div class="sidebar" id="sidebar">
+    <button class="sidebar-close" id="sidebar-close">
+      <i class="fas fa-times"></i>
+    </button>
+    <a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a>
+    <a href="{% url 'trending' %}"><i class="fas fa-fire"></i> Trending</a>
+    <a href="{% url 'saved_materials' %}"><i class="fas fa-bookmark"></i> Saved</a>
+  </div>
+
+  <div class="topbar">
+    <div class="d-flex align-items-center">
+      <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="logo ms-2">
+        <i class="fas fa-graduation-cap logo-icon"></i>
+        <strong>STUDEX</strong>
+      </div>
+    </div>
+    <div class="d-flex align-items-center">
+      <span class="d-none d-sm-inline">Hello, {{ user.username|title }}</span>
+      <span class="d-sm-none">{{ user.username|title }}</span>
+      {% if user.profile.profile_picture %}
+        <img src="{{ user.profile.profile_picture.url }}" class="profile-pic">
+      {% else %}
+        <img src="{% static 'img/default_profile.png' %}" class="profile-pic">
+      {% endif %}
+      <div class="dropdown d-inline">
+        <button class="btn btn-sm btn-dark dropdown-toggle" data-bs-toggle="dropdown"></button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="overlay">
+      <div class="form-wrapper" id="form-wrapper" style="transition: margin-bottom 0.3s ease;">
+        
+        <!-- Search Form -->
+        <div class="form-box">
+          <form action="/search/" method="post" id="search-form" class="search_form">
+            {% csrf_token %}
+            <div class="input-group">
+              <input type="text" name="query" id="search-input" class="form-control" placeholder="Search for a topic...">
+              <button class="btn btn-success"><i class="fas fa-search"></i></button>
+            </div>
+
+            <div id="search-history" class="list-group mt-2" style="display: none;">
+              {% if recent_searches %}
+                <div class="px-3 py-2" style="height: 35px; border-bottom: 1px solid rgba(255,255,255,0.2); font-weight: bold;">Search History</div>
+              {% endif %}
+              
+              {% for item in recent_searches %}
+                <a href="javascript:void(0)" class="list-group-item list-group-item-action recent-search-item" style="background-color: transparent; color: white; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  {{ item }}
+                </a>
+              {% endfor %}
+            </div>
+
+            <div id="suggestions" class="list-group mt-2"></div>
+          </form>
+        </div>
+
+        <!-- Filter Form -->
+        <div class="form-box">
+          <h3 style="color: rgb(237, 60, 60); margin-bottom: 20px;">FILTER FOR MATERIALS</h3>
+          <form action="/recommended/" method="post" class="form-container">
+            {% csrf_token %}
+            
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="{{ form.subject.id_for_label }}" class="form-label">Subject:</label>
+                {{ form.subject }}
+              </div>
+              <div class="col-md-6">
+                <label for="{{ form.level.id_for_label }}" class="form-label">Level:</label>
+                {{ form.level }}
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <label class="form-check-label me-3">
+                <input type="checkbox" name="material_types" value="1" class="form-check-input custom-check"> PDF
+              </label>
+              <label class="form-check-label me-3">
+                <input type="checkbox" name="material_types" value="2" class="form-check-input custom-check"> Video
+              </label>
+            </div>
+
+            <div class="mt-3 text-center">
+              <button class="btn btn-success px-4 py-2 btnn">Search</button>
+            </div>
+          </form>
+        </div>
+      </div> <!-- form-wrapper -->
+    </div>
+
+  </div>
+
+  <div class="main-content">
+    <div id="recommendation-section">
+      <span class="loader">
+        <i class="fas fa-graduation-cap loader-icon"></i>
+        <span class="loader-text">STUDEX</span>
+      </span>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      const searchInput = $('#search-input');
+      const suggestionsBox = $('#suggestions');
+      const historyBox = $('#search-history');
+      const formWrapper = $('#form-wrapper');
+      const hero = $('.hero');
+      const sidebar = $('#sidebar');
+      const mobileOverlay = $('#mobile-overlay');
+      const mobileMenuToggle = $('#mobile-menu-toggle');
+      const sidebarClose = $('#sidebar-close');
+
+      // Mobile menu functionality
+      function openMobileMenu() {
+        sidebar.addClass('active');
+        mobileOverlay.addClass('active');
+        $('body').css('overflow', 'hidden');
+      }
+
+      function closeMobileMenu() {
+        sidebar.removeClass('active');
+        mobileOverlay.removeClass('active');
+        $('body').css('overflow', 'auto');
+      }
+
+      mobileMenuToggle.on('click', openMobileMenu);
+      sidebarClose.on('click', closeMobileMenu);
+      mobileOverlay.on('click', closeMobileMenu);
+
+      // Close menu on window resize if desktop
+      $(window).on('resize', function() {
+        if ($(window).width() > 768) {
+          closeMobileMenu();
+        }
+      });
+
+      function adjustMargin(expand = true) {
+        if ($(window).width() > 768) {
+          if (expand) {
+            formWrapper.css('margin-bottom', '240px');
+            hero.css('height', '750px');
+          } else {
+            formWrapper.css('margin-bottom', '0px');
+            hero.css('height', '650px');
+          }
+        } else {
+          // On mobile, don't adjust hero height dramatically
+          if (expand) {
+            formWrapper.css('margin-bottom', '120px');
+          } else {
+            formWrapper.css('margin-bottom', '0px');
+          }
+        }
+      }
+
+      function showHistoryIfAvailable() {
+        if (searchInput.val().trim().length === 0 && historyBox.children().length > 0) {
+          historyBox.show();
+          suggestionsBox.hide();
+          adjustMargin(true);
+        }
+      }
+
+      searchInput.on('focus', showHistoryIfAvailable);
+
+      searchInput.on('input', function () {
+        let query = $(this).val().trim();
+
+        if (query.length > 0) {
+          historyBox.hide();
+          adjustMargin(true);
+
+          $.ajax({
+            url: '/search_suggestions/',
+            method: 'POST',
+            data: {
+              query: query,
+              csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function (data) {
+              suggestionsBox.html('');
+              if (data.suggestions.length > 0) {
+                data.suggestions.forEach(function (suggestion) {
+                  suggestionsBox.append(
+                    '<a href="javascript:void(0)" class="list-group-item list-group-item-action suggestion-item" style="background-color: transparent; color: white; border-bottom: 1px solid rgba(255,255,255,0.1);">' 
+                    + suggestion + 
+                    '</a>'
+                  );
+                });
+                suggestionsBox.show();
+              } else {
+                suggestionsBox.hide();
+              }
+            }
+          });
+        } else {
+          suggestionsBox.html('');
+          showHistoryIfAvailable();
+        }
+      });
+
+      $(document).on('click', '.suggestion-item', function () {
+        searchInput.val($(this).text());
+        $('#search-form').submit();
+      });
+
+      $(document).on('click', '.recent-search-item', function () {
+        searchInput.val($(this).text());
+        $('#search-form').submit();
+      });
+
+      $(document).click(function (e) {
+        if (!$(e.target).closest("#search-input, #suggestions, #search-history").length) {
+          suggestionsBox.html('');
+          historyBox.hide();
+          adjustMargin(false);
+        }
+      });
+
+      // Prevent clicks inside dropdown from closing it
+      $(document).on('click', '.dropdown-menu', function(e) {
+        e.stopPropagation();
+      });
+
+      // Load recommendations
+      $.ajax({
+        url: '/load_recommendations/',
+        method: 'GET',
+        success: function (data) {
+          $('#recommendation-section').html(data);
+        },
+        error: function () {
+          $('#recommendation-section').html("<p>Could not load recommendations.</p>");
+        }
+      });
+    });
+
+  </script>
+</body>
+</html>

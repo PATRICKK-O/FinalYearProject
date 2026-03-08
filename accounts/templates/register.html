@@ -1,0 +1,877 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Register - PSMRS</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #121820;
+      --bg-card: #1c1f2b;
+      --bg-input: #2a2f3a;
+      --green-accent: #28a745;
+      --text-light: #f1f1f1;
+      --red-error: #dc3545;
+      --yellow-warning: #ffc107;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .bg-container {
+      position: relative;
+      background: url("{% static 'img/hero2.jpg' %}") no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      padding: clamp(1.5rem, 5vw, 3rem) 0;
+    }
+
+    .bg-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(18, 24, 32, 0.6);
+      z-index: 1;
+    }
+
+    .content-wrapper {
+      position: relative;
+      z-index: 2;
+      color: var(--text-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: clamp(1rem, 4vw, 2rem);
+      min-height: calc(100vh - clamp(3rem, 10vw, 6rem));
+    }
+
+    .registration-container {
+      max-width: min(90%, 1000px);
+      width: 100%;
+      height: fit-content;
+    }
+
+    .registration-card {
+      background-color: var(--bg-card);
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+      animation: fadeIn 0.6s ease;
+      height: auto;
+    }
+
+    .image-section {
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                  url('https://images.unsplash.com/photo-1588072432836-e10032774350?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(1rem, 4vw, 2rem);
+      min-height: 200px;
+    }
+
+    .form-section {
+      padding: clamp(1.5rem, 5vw, 2.5rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .form-control {
+      background-color: var(--bg-input);
+      border: 1px solid #444;
+      color: var(--text-light);
+      padding: clamp(0.5rem, 2vw, 0.7rem) clamp(0.7rem, 2.5vw, 0.9rem);
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+      font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+    }
+
+    .form-control:focus {
+      background-color: var(--bg-input);
+      border-color: var(--green-accent);
+      box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.3);
+      color: var(--text-light);
+    }
+
+    .form-control.valid {
+      border-color: var(--green-accent);
+      background-color: rgba(40, 167, 69, 0.1);
+    }
+
+    .form-control.invalid {
+      border-color: var(--red-error);
+      background-color: rgba(220, 53, 69, 0.1);
+    }
+
+    .form-label {
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+      font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+    }
+
+    .btn-register {
+      background-color: var(--green-accent);
+      color: white;
+      font-weight: 600;
+      width: 100%;
+      padding: clamp(0.5rem, 2vw, 0.7rem);
+      border: none;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+      transition: all 0.3s ease;
+      font-size: clamp(0.9rem, 2.5vw, 1rem);
+    }
+
+    .btn-register:hover:not(:disabled) {
+      background-color: #218838;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+    }
+
+    .btn-register:disabled {
+      background-color: #6c757d;
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .file-input {
+      opacity: 0;
+      width: 0.1px;
+      height: 0.1px;
+      position: absolute;
+    }
+
+    .file-input-label {
+      width: 100%;
+      height: 40px;
+      background: var(--bg-input);
+      border: 1px dashed #555;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin-bottom: 0.8rem;
+      font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+    }
+
+    .file-input-label:hover {
+      border-color: var(--green-accent);
+    }
+
+    .login-link {
+      color: var(--green-accent);
+      text-decoration: none;
+      font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+    }
+
+    .login-link:hover {
+      text-decoration: underline;
+    }
+
+    .errorlist {
+      display: none;
+    }
+
+    .error-message {
+      color: var(--red-error);
+      font-size: clamp(0.7rem, 2vw, 0.8rem);
+      margin-top: -0.6rem;
+      margin-bottom: 0.6rem;
+      display: none;
+    }
+
+    .form-row {
+      display: flex;
+      gap: clamp(0.8rem, 3vw, 1.5rem);
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .form-col {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .form-title {
+      margin-bottom: 1.5rem;
+      font-size: clamp(1.2rem, 4vw, 1.4rem);
+    }
+
+    /* Password Requirements Styling */
+    .password-requirements {
+      margin-top: -0.5rem;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background: rgba(40, 167, 69, 0.1);
+      border-left: 4px solid var(--green-accent);
+      border-radius: 6px;
+      display: none;
+      font-size: clamp(0.75rem, 2vw, 0.85rem);
+    }
+
+    .password-requirements.show {
+      display: block;
+    }
+
+    .password-requirements.loading {
+      opacity: 0.6;
+    }
+
+    .requirement {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .requirement:last-child {
+      margin-bottom: 0;
+    }
+
+    .requirement .icon {
+      margin-right: 0.5rem;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+
+    .requirement.invalid .icon {
+      background: var(--red-error);
+      color: white;
+    }
+
+    .requirement.valid .icon {
+      background: var(--green-accent);
+      color: white;
+    }
+
+    .requirement.invalid {
+      color: var(--red-error);
+    }
+
+    .requirement.valid {
+      color: var(--green-accent);
+    }
+
+    .password-strength {
+      margin-top: 1rem;
+      height: 4px;
+      background: #444;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .password-strength-bar {
+      height: 100%;
+      width: 0%;
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .strength-weak { background: var(--red-error); }
+    .strength-medium { background: var(--yellow-warning); }
+    .strength-strong { background: var(--green-accent); }
+
+    .password-match {
+      margin-top: -0.5rem;
+      margin-bottom: 1rem;
+      font-size: clamp(0.75rem, 2vw, 0.85rem);
+      display: none;
+    }
+
+    .password-match.show {
+      display: block;
+    }
+
+    .password-match.valid {
+      color: var(--green-accent);
+    }
+
+    .password-match.invalid {
+      color: var(--red-error);
+    }
+
+    .validation-loading {
+      display: none;
+      font-size: clamp(0.75rem, 2vw, 0.85rem);
+      color: var(--yellow-warning);
+      margin-top: -0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .validation-loading.show {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .studex-logo {
+      font-family: "Lobster", sans-serif;
+      font-size: clamp(1.8rem, 6vw, 2.25rem);
+      font-weight: bold;
+      text-shadow: 
+        0 0 15px rgba(126, 245, 138, 0.6),
+        0 0 25px rgba(126, 245, 138, 0.4),
+        0 0 35px rgba(126, 245, 138, 0.2);
+      background: linear-gradient(135deg, #7ef58a 0%, #4ade80 50%, #22c55e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+
+    .studex-logo::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: -12px;
+      right: -12px;
+      bottom: -8px;
+      background: linear-gradient(135deg, #7ef58a 0%, #4ade80 50%, #22c55e 100%);
+      border-radius: 10px;
+      opacity: 0.1;
+      z-index: -1;
+      transform: scale(0.8);
+      transition: all 0.3s ease;
+    }
+
+    .studex-logo:hover {
+      transform: translateY(-2px);
+      text-shadow: 
+        0 0 20px rgba(126, 245, 138, 0.8),
+        0 0 30px rgba(126, 245, 138, 0.6),
+        0 0 40px rgba(126, 245, 138, 0.4);
+    }
+
+    .studex-logo:hover::before {
+      transform: scale(1);
+      opacity: 0.2;
+    }
+
+    .studex-logo .logo-icon {
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      animation: pulse 2s infinite;
+      color: #7ef58a;
+      text-shadow: 
+        0 0 10px rgba(126, 245, 138, 0.5),
+        0 0 20px rgba(126, 245, 138, 0.3);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
+    /* Enhanced Media Queries */
+    @media (max-width: 992px) {
+      .registration-card {
+        flex-direction: column;
+      }
+      
+      .image-section {
+        min-height: 150px;
+        padding: clamp(0.8rem, 3vw, 1.5rem);
+      }
+      
+      .form-section {
+        padding: clamp(1rem, 4vw, 1.5rem);
+      }
+      
+      .registration-card {
+        border-radius: 8px;
+      }
+      
+      .content-wrapper {
+        padding: clamp(1rem, 3vw, 1.5rem);
+      }
+      
+      .image-section h2 {
+        font-size: clamp(1.2rem, 4vw, 1.5rem);
+      }
+      
+      .image-section p {
+        font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+      }
+    }
+
+    @media (max-width: 576px) {
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+      
+      .form-col {
+        min-width: 100%;
+      }
+      
+      .registration-container {
+        max-width: 95%;
+      }
+      
+      .btn-register {
+        padding: clamp(0.4rem, 2vw, 0.6rem);
+      }
+      
+      .file-input-label {
+        height: 36px;
+        font-size: clamp(0.75rem, 2.5vw, 0.85rem);
+      }
+      
+      .image-section {
+        min-height: 120px;
+      }
+
+      .password-requirements {
+        padding: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-container">
+    <div class="bg-overlay"></div>
+    <div class="content-wrapper">
+      <div class="container registration-container">
+        <div class="registration-card row g-0 h-100 flex-column flex-md-row">
+          <!-- Image Section -->
+          <div class="col-md-5 image-section">
+            <div class="text-center text-white">
+              <div class="studex-logo">
+                <i class="fas fa-graduation-cap logo-icon"></i>
+                <span>STUDEX</span>
+              </div>
+              <h2 class="mb-3">Welcome to <span><i class="fas fa-graduation-cap logo-icon"></i>STUDEX</span></h2>
+              <p>Join our learning community to access personalized study materials</p>
+            </div>
+          </div>
+
+          <!-- Form Section -->
+          <div class="col-md-7 d-flex">
+            <div class="form-section w-100">
+              <h3 class="form-title">Create Your Account</h3>
+
+              <form method="post" enctype="multipart/form-data" novalidate id="registerForm">
+                {% csrf_token %}
+
+                <!-- Row 1: Username and First Name -->
+                <div class="form-row">
+                  <div class="form-col">
+                    <label for="id_username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="id_username" name="username" 
+                           value="{{ form.username.value|default:'' }}" required>
+                    <div class="error-message" id="username-error"></div>
+                  </div>
+                  <div class="form-col">
+                    <label for="id_first_name" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="id_first_name" name="first_name" 
+                           value="{{ form.first_name.value|default:'' }}">
+                  </div>
+                </div>
+
+                <!-- Row 2: Email and Last Name -->
+                <div class="form-row">
+                  <div class="form-col">
+                    <label for="id_email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="id_email" name="email" 
+                           value="{{ form.email.value|default:'' }}" required>
+                    <div class="error-message" id="email-error"></div>
+                  </div>
+                  <div class="form-col">
+                    <label for="id_last_name" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="id_last_name" name="last_name" 
+                           value="{{ form.last_name.value|default:'' }}">
+                  </div>
+                </div>
+
+                <!-- Row 3: Course of Interest (Full Width) -->
+                <div class="mb-3">
+                  <label for="id_course_of_interest" class="form-label">Course of Interest</label>
+                  <input type="text" class="form-control" id="id_course_of_interest" name="course_of_interest" 
+                         value="{{ form.course_of_interest.value|default:'' }}" required>
+                  <div class="error-message" id="course-error"></div>
+                </div>
+
+                <!-- Row 4: Password and Confirm Password -->
+                <div class="form-row">
+                  <div class="form-col">
+                    <label for="id_password1" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="id_password1" name="password1" required>
+                    
+                    <div class="validation-loading" id="passwordLoading">
+                      <i class="fas fa-spinner fa-spin"></i> Validating password...
+                    </div>
+                    
+                    <div class="password-requirements" id="passwordRequirements">
+                      <div class="requirements-list" id="requirementsList">
+                        <!-- Requirements will be populated by Django validation -->
+                      </div>
+                      <div class="password-strength">
+                        <div class="password-strength-bar" id="strengthBar"></div>
+                      </div>
+                    </div>
+                    
+                    <div class="error-message" id="password1-error"></div>
+                  </div>
+                  <div class="form-col">
+                    <label for="id_password2" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="id_password2" name="password2" required>
+                    <div class="password-match" id="passwordMatch"></div>
+                    <div class="error-message" id="password2-error"></div>
+                  </div>
+                </div>
+
+                <!-- Profile Picture -->
+                <div class="mb-3">
+                  <label class="form-label">Profile Picture (optional)</label>
+                  <input type="file" id="id_profile_picture" name="profile_picture" class="file-input">
+                  <label for="id_profile_picture" class="file-input-label">
+                    <span id="file-name">Choose File</span>
+                  </label>
+                </div>
+
+                <button type="submit" class="btn btn-register" id="submitBtn" disabled>Register</button>
+
+                <p class="mt-3 text-center mb-0">
+                  Already have an account? <a href="{% url 'login' %}" class="login-link">Login here</a>
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Get DOM elements
+    const password1 = document.getElementById('id_password1');
+    const password2 = document.getElementById('id_password2');
+    const username = document.getElementById('id_username');
+    const email = document.getElementById('id_email');
+    const firstName = document.getElementById('id_first_name');
+    const lastName = document.getElementById('id_last_name');
+    const courseOfInterest = document.getElementById('id_course_of_interest');
+    const requirements = document.getElementById('passwordRequirements');
+    const requirementsList = document.getElementById('requirementsList');
+    const submitBtn = document.getElementById('submitBtn');
+    const strengthBar = document.getElementById('strengthBar');
+    const passwordMatch = document.getElementById('passwordMatch');
+    const passwordLoading = document.getElementById('passwordLoading');
+
+    let validationTimeout;
+    let isPasswordValid = false;
+    let passwordsMatch = false;
+
+    // File input handler
+    document.getElementById('id_profile_picture').addEventListener('change', function(e) {
+      const fileName = e.target.files[0] ? e.target.files[0].name : 'Choose File';
+      document.getElementById('file-name').textContent = fileName;
+    });
+
+    // Get CSRF token
+    function getCSRFToken() {
+      return document.querySelector('[name=csrfmiddlewaretoken]').value;
+    }
+
+    // Debounced password validation
+    function validatePasswordWithDjango() {
+      const password = password1.value;
+      
+      if (password.length === 0) {
+        requirements.classList.remove('show');
+        passwordLoading.classList.remove('show');
+        updatePasswordFieldStyling('');
+        isPasswordValid = false;
+        updateSubmitButton();
+        return;
+      }
+
+      // Show loading indicator
+      passwordLoading.classList.add('show');
+      requirements.classList.add('loading');
+
+      // Clear previous timeout
+      clearTimeout(validationTimeout);
+
+      // Debounce API calls
+      validationTimeout = setTimeout(() => {
+        const data = {
+          password: password,
+          username: username.value,
+          email: email.value,
+          first_name: firstName.value,
+          last_name: lastName.value
+        };
+
+        fetch('{% url "validate_password_ajax" %}', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken()
+          },
+          body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Hide loading indicator
+          passwordLoading.classList.remove('show');
+          requirements.classList.remove('loading');
+          
+          // Show requirements panel
+          requirements.classList.add('show');
+          
+          // Update validation state
+          isPasswordValid = data.is_valid;
+          
+          // Display Django's validation results
+          displayPasswordRequirements(data.errors, data.requirements);
+          
+          // Update password field styling
+          updatePasswordFieldStyling(data.is_valid ? 'valid' : 'invalid');
+          
+          // Update strength bar
+          updatePasswordStrength(password, data.is_valid);
+          
+          // Update submit button
+          updateSubmitButton();
+        })
+        .catch(error => {
+          console.error('Password validation error:', error);
+          passwordLoading.classList.remove('show');
+          requirements.classList.remove('loading');
+          isPasswordValid = false;
+          updateSubmitButton();
+        });
+      }, 300); // 300ms debounce
+    }
+
+    // Display Django validation results
+    function displayPasswordRequirements(errors, requirements) {
+      let html = '';
+      
+      if (errors.length === 0) {
+        html = '<div class="requirement valid"><span class="icon">✓</span><span>Password meets all requirements</span></div>';
+      } else {
+        errors.forEach(error => {
+          html += `<div class="requirement invalid"><span class="icon">✗</span><span>${error}</span></div>`;
+        });
+        
+        // Add positive feedback for met requirements
+        if (requirements.length >= 8) {
+          html += '<div class="requirement valid"><span class="icon">✓</span><span>At least 8 characters</span></div>';
+        }
+      }
+      
+      requirementsList.innerHTML = html;
+    }
+
+    // Update password field styling
+    function updatePasswordFieldStyling(status) {
+      password1.classList.remove('valid', 'invalid');
+      if (status === 'valid') {
+        password1.classList.add('valid');
+      } else if (status === 'invalid') {
+        password1.classList.add('invalid');
+      }
+    }
+
+    // Update password strength bar
+    function updatePasswordStrength(password, isValid) {
+      let strength = 0;
+      let width = 0;
+      let className = '';
+
+      // Calculate strength based on various criteria
+      if (password.length >= 8) strength++;
+      if (/[a-z]/.test(password)) strength++;
+      if (/[A-Z]/.test(password)) strength++;
+      if (/\d/.test(password)) strength++;
+      if (/[^a-zA-Z\d]/.test(password)) strength++;
+      if (isValid) strength++; // Bonus for passing Django validation
+
+      if (strength <= 2) {
+        width = 25;
+        className = 'strength-weak';
+      } else if (strength <= 4) {
+        width = 60;
+        className = 'strength-medium';
+      } else {
+        width = 100;
+        className = 'strength-strong';
+      }
+
+      strengthBar.style.width = `${width}%`;
+      strengthBar.className = `password-strength-bar ${className}`;
+    }
+
+    // Check password confirmation
+    function checkPasswordMatch() {
+      const password = password1.value;
+      const confirmPassword = password2.value;
+
+      if (confirmPassword.length > 0) {
+        passwordMatch.classList.add('show');
+        
+        if (password === confirmPassword && password.length > 0) {
+          passwordMatch.textContent = '✓ Passwords match';
+          passwordMatch.classList.remove('invalid');
+          passwordMatch.classList.add('valid');
+          password2.classList.remove('invalid');
+          password2.classList.add('valid');
+          passwordsMatch = true;
+        } else {
+          passwordMatch.textContent = '✗ Passwords do not match';
+          passwordMatch.classList.remove('valid');
+          passwordMatch.classList.add('invalid');
+          password2.classList.remove('valid');
+          password2.classList.add('invalid');
+          passwordsMatch = false;
+        }
+      } else {
+        passwordMatch.classList.remove('show');
+        password2.classList.remove('valid', 'invalid');
+        passwordsMatch = false;
+      }
+      
+      updateSubmitButton();
+    }
+
+    // Update submit button state
+    function updateSubmitButton() {
+      const allFieldsFilled = username.value.length > 0 && 
+                             email.value.length > 0 && 
+                             courseOfInterest.value.length > 0 && 
+                             password1.value.length > 0 && 
+                             password2.value.length > 0;
+      
+      const canSubmit = allFieldsFilled && isPasswordValid && passwordsMatch;
+      submitBtn.disabled = !canSubmit;
+    }
+
+    // Event listeners
+    password1.addEventListener('input', validatePasswordWithDjango);
+    password1.addEventListener('focus', () => {
+      if (password1.value.length > 0) {
+        requirements.classList.add('show');
+      }
+    });
+
+    password2.addEventListener('input', checkPasswordMatch);
+
+    // Update submit button when other fields change
+    [username, email, firstName, lastName, courseOfInterest].forEach(field => {
+      field.addEventListener('input', () => {
+        updateSubmitButton();
+        // Re-validate password when user info changes (for similarity check)
+        if (password1.value.length > 0) {
+          validatePasswordWithDjango();
+        }
+      });
+    });
+
+    // Form submission with enhanced validation
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      // Clear previous errors
+      document.querySelectorAll('.error-message').forEach(el => {
+        el.style.display = 'none';
+        el.textContent = '';
+      });
+
+      let isValid = true;
+      let firstErrorField = null;
+
+      // Check required fields
+      const requiredFields = [
+        { id: 'id_username', errorId: 'username-error', name: 'Username' },
+        { id: 'id_email', errorId: 'email-error', name: 'Email' },
+        { id: 'id_course_of_interest', errorId: 'course-error', name: 'Course of Interest' },
+        { id: 'id_password1', errorId: 'password1-error', name: 'Password' },
+        { id: 'id_password2', errorId: 'password2-error', name: 'Confirm Password' }
+      ];
+
+      requiredFields.forEach(field => {
+        const input = document.getElementById(field.id);
+        const errorDiv = document.getElementById(field.errorId);
+        
+        if (!input.value.trim()) {
+          errorDiv.textContent = `${field.name} is required`;
+          errorDiv.style.display = 'block';
+          isValid = false;
+          if (!firstErrorField) firstErrorField = input;
+        }
+      });
+
+      // Check password validation
+      if (!isPasswordValid && password1.value.length > 0) {
+        const error = document.getElementById('password1-error');
+        error.textContent = 'Password does not meet the requirements shown above';
+        error.style.display = 'block';
+        isValid = false;
+        if (!firstErrorField) firstErrorField = password1;
+      }
+
+      // Check password confirmation
+      if (!passwordsMatch && password1.value.length > 0 && password2.value.length > 0) {
+        const error = document.getElementById('password2-error');
+        error.textContent = 'Passwords do not match';
+        error.style.display = 'block';
+        isValid = false;
+        if (!firstErrorField) firstErrorField = password2;
+      }
+
+      // Prevent form submission if validation fails
+      if (!isValid) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Focus on first error field
+        if (firstErrorField) {
+          firstErrorField.focus();
+          firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        return false;
+      }
+
+      // If validation passes, allow normal form submission
+      // Don't prevent default - let Django handle the form submission
+    });
+
+    // Initial submit button state
+    updateSubmitButton();
+  </script>
+</body>
+</html>
