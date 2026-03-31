@@ -29,7 +29,7 @@ MarkupSafe==3.0.2
 matplotlib==3.9.4
 murmurhash==1.0.12
 mysqlclient==2.2.7
-numpy==1.23.5
+numpy==1.26.4
 packaging==25.0
 pandas==2.3.3
 pathlib_abc==0.1.1
